@@ -76,9 +76,26 @@ function Posts() {
     });
   };
 
+  const handleDelete = (postId) => {
+    console.log('Deleting post with ID:', postId);
+    axios
+      .delete(`http://localhost:8000/api/posts/${postId}`)
+      .then(() => {
+        // Remove the deleted post from the state
+        setPosts(posts.filter((post) => post.id !== postId));
+        toast.success('Post deleted successfully', { autoClose: 3000 });
+      })
+      .catch((error) => {
+        console.error('Error deleting post:', error);
+        toast.error('Error deleting post. Please try again.', {
+          autoClose: 3000,
+        });
+      });
+  };
+
   return (
     <>
-      <div className="col-span-3 p-4 shadow-lg">
+      <div className="col-span-3 p-4 shadow-lg font-roboto">
         <ToastContainer />
         <form
           onSubmit={handleSubmit}
@@ -130,10 +147,11 @@ function Posts() {
               required
             />
           </div>
+
           <div className="mb-4">
             <button
               type="submit"
-              className="bg-blue-950 hover:bg-blue-900 text-white font-semibold py-2 px-4 rounded"
+              className="bg-primary hover:bg-blue-900 text-white font-semibold py-2 px-4 rounded"
             >
               Create Post
             </button>
@@ -165,7 +183,10 @@ function Posts() {
 
                 <div className={'pt-[30px] grid grid-cols-7 md:gap-[50px]'}>
                   <div className={'col-span-2'}>
-                    <button className={'hover:bg-gray-100'}>
+                    <button
+                      className={'hover:bg-gray-100'}
+                      onClick={() => handleDelete(post._id)}
+                    >
                       <RiDeleteBinLine size={25} />
                     </button>
                   </div>
